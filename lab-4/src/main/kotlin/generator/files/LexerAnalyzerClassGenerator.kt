@@ -1,13 +1,14 @@
 package generator.files
 
 import dsl.generateClass
+import generator.Constants.EOF
 import generator.Generator
 import generator.VisitorData
 import java.io.File
 
-class LexerAnalyzerGenerator : Generator {
+class LexerAnalyzerClassGenerator : Generator {
     override fun generate(data: VisitorData, stringPath: String) {
-        File("$stringPath/LexerAnalyzer.kt").writeText(
+        File(stringPath, "LexerAnalyzer.kt").writeText(
             generateClass("LexerAnalyzer") {
                 packageName(data.packageName)
                 import("java.io.InputStream")
@@ -15,7 +16,7 @@ class LexerAnalyzerGenerator : Generator {
 
                 variable("position", "Int", "0", isVar = true)
                 variable("currentChar", "Int", "-1", isVar = true)
-                variable("token", "Token", "Token.EOF", isVar = true)
+                variable("token", "Token", "Token.$EOF", isVar = true)
                 variable("tokenValue", "String", "\"\"", isVar = true)
                 variable("tokenText", "StringBuilder", "StringBuilder()", isVar = true)
 
@@ -42,7 +43,7 @@ class LexerAnalyzerGenerator : Generator {
                         +"string = tokenText.toString()"
                         +"tokenText.append(currentChar.toChar())"
                         val isToken = data.tokens.values.joinToString(separator = " || ") { s ->
-                            getConditionForToken(s)
+                            getConditionForToken(s, "tokenText.toString()")
                         }
                         generateIf(isToken) {
                             +"nextChar()"
@@ -62,9 +63,9 @@ class LexerAnalyzerGenerator : Generator {
                     }
                     data.tokens.keys.forEach { token ->
                         val tokenValue = data.tokens.getOrDefault(token, "")
-                        generateIf(getConditionForToken(tokenValue)) {
+                        generateIf(getConditionForToken(tokenValue, "string")) {
                             +"token = Token.$token"
-                            +"tokenValue = \"${data.tokens[token]}\""
+                            +"tokenValue = string"
                             +"return"
                         }
                     }
@@ -84,12 +85,12 @@ class LexerAnalyzerGenerator : Generator {
         )
     }
 
-    private fun getConditionForToken(tokenValue: String): String {
+    private fun getConditionForToken(tokenValue: String, varName: String): String {
         return if (tokenValue.startsWith("/") && tokenValue.endsWith("/") && tokenValue.length > 2) {
             val regex = tokenValue.removePrefix("/").removeSuffix("/")
-            "string.matches(\"$regex\".toRegex())"
+            "$varName.matches(\"$regex\".toRegex())"
         } else {
-            "string == \"$tokenValue\""
+            "$varName == \"$tokenValue\""
         }
     }
 }

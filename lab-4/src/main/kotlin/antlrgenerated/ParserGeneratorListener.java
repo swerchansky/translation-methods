@@ -20,6 +20,16 @@ public interface ParserGeneratorListener extends ParseTreeListener {
 	 */
 	void exitStart(ParserGeneratorParser.StartContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ParserGeneratorParser#nodeValue}.
+	 * @param ctx the parse tree
+	 */
+	void enterNodeValue(ParserGeneratorParser.NodeValueContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ParserGeneratorParser#nodeValue}.
+	 * @param ctx the parse tree
+	 */
+	void exitNodeValue(ParserGeneratorParser.NodeValueContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ParserGeneratorParser#package}.
 	 * @param ctx the parse tree
 	 */

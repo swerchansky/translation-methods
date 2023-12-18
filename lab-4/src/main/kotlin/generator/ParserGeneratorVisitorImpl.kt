@@ -2,14 +2,19 @@ package generator
 
 import antlrgenerated.ParserGeneratorBaseVisitor
 import antlrgenerated.ParserGeneratorParser
+import generator.Constants.EOF
+import generator.Constants.EPS
+import generator.Constants.START
 import org.antlr.v4.runtime.tree.ParseTree
 
 class ParserGeneratorVisitorImpl : ParserGeneratorBaseVisitor<Unit>() {
-    val data by lazy { VisitorData(rules, tokens, first, follow, packageName) }
+    val data by lazy { VisitorData(rules, tokens, first, follow, packageName, ruleNumberFromFirst, nodeValues) }
     private val rules = hashMapOf<String, MutableList<MutableList<String>>>()
     private val tokens = hashMapOf<String, String>()
     private val first = hashMapOf<String, HashSet<String>>()
     private val follow = hashMapOf<String, HashSet<String>>()
+    private val ruleNumberFromFirst = hashMapOf<String, HashMap<String, Int>>()
+    private val nodeValues = mutableListOf<String>()
     private var packageName = ""
 
     override fun visit(tree: ParseTree?) {
@@ -21,13 +26,19 @@ class ParserGeneratorVisitorImpl : ParserGeneratorBaseVisitor<Unit>() {
         packageName = ctx.RULE_NAME().text
     }
 
+    override fun visitNodeValue(ctx: ParserGeneratorParser.NodeValueContext?) {
+        ctx ?: return
+        nodeValues.add(ctx.NODE_ATTR().text)
+    }
+
     override fun visitStart(ctx: ParserGeneratorParser.StartContext?) {
         ctx ?: return
-        ctx.package_()?.let { visit(it) }
-        ctx.rule_().forEach { visit(it) }
-        ctx.token().forEach { visit(it) }
+        tokens[EPS] = EPS
+        tokens[EOF] = EOF
+        ctx.children.forEach { visit(it) }
         buildFirst()
         buildFollow()
+        buildRuleNumberFromFirst()
     }
 
     override fun visitRule(ctx: ParserGeneratorParser.RuleContext?) {
@@ -110,9 +121,17 @@ class ParserGeneratorVisitorImpl : ParserGeneratorBaseVisitor<Unit>() {
         }
     }
 
-    private companion object {
-        const val START = "start"
-        const val EOF = "EOF"
-        const val EPS = "EPS"
+    private fun buildRuleNumberFromFirst() {
+        first.keys.forEach { ruleName ->
+            ruleNumberFromFirst[ruleName] = hashMapOf()
+            first.getOrDefault(ruleName, hashSetOf()).forEach { firstElement ->
+                rules.getOrDefault(ruleName, emptyList()).forEachIndexed { index, rule ->
+                    if (firstElement in getFirst(rule.first())) {
+                        val tokenToRule = ruleNumberFromFirst.getOrDefault(ruleName, mutableMapOf())
+                        tokenToRule[firstElement] = index
+                    }
+                }
+            }
+        }
     }
 }

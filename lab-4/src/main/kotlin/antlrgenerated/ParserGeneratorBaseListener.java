@@ -31,6 +31,18 @@ public class ParserGeneratorBaseListener implements ParserGeneratorListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterNodeValue(ParserGeneratorParser.NodeValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNodeValue(ParserGeneratorParser.NodeValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterPackage(ParserGeneratorParser.PackageContext ctx) { }
 	/**
 	 * {@inheritDoc}

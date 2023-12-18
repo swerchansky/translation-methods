@@ -6,4 +6,6 @@ data class VisitorData(
     val first: HashMap<String, HashSet<String>>,
     val follow: HashMap<String, HashSet<String>>,
     val packageName: String,
+    val ruleNumberFromFirst: HashMap<String, HashMap<String, Int>>,
+    val nodeValues: List<String>,
 )

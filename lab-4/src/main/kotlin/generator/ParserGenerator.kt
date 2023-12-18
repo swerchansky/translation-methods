@@ -1,15 +1,17 @@
 package generator
 
-import generator.files.LexerAnalyzerGenerator
-import generator.files.NodeGenerator
-import generator.files.TokenGenerator
+import generator.files.LexerAnalyzerClassGenerator
+import generator.files.NodeClassGenerator
+import generator.files.ParserClassGenerator
+import generator.files.TokenClassGenerator
 import java.io.File
 
 class ParserGenerator : Generator {
     private val generators = listOf(
-        TokenGenerator(),
-        NodeGenerator(),
-        LexerAnalyzerGenerator(),
+        TokenClassGenerator(),
+        NodeClassGenerator(),
+        LexerAnalyzerClassGenerator(),
+        ParserClassGenerator(),
     )
 
     override fun generate(data: VisitorData, stringPath: String) {

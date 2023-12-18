@@ -46,6 +46,7 @@ class EnumClassBuilder(private val name: String) {
 @CodeDsl
 class ClassBuilder(private val name: String, private val isDataClass: Boolean = false) {
     private val arguments: MutableList<Argument> = mutableListOf()
+    private val argumentLines: MutableList<String> = mutableListOf()
     private val variables: MutableList<Argument> = mutableListOf()
     private val functions: MutableList<FunctionsBuilder> = mutableListOf()
     private val imports: MutableList<Import> = mutableListOf()
@@ -72,6 +73,11 @@ class ClassBuilder(private val name: String, private val isDataClass: Boolean = 
         isPrivate: Boolean = false,
     ) {
         arguments += Argument(argumentName, argumentType, defaultValue, isVal, isVar, isPrivate)
+    }
+
+    @CodeDsl
+    fun argument(line: String) {
+        argumentLines += line
     }
 
     @CodeDsl
@@ -105,7 +111,7 @@ class ClassBuilder(private val name: String, private val isDataClass: Boolean = 
         val functions = functions.joinToString("$SEPARATOR$SEPARATOR").prependIndent("\t")
         val imports = imports.joinToString(SEPARATOR)
         val data = if (isDataClass) "data " else ""
-        val argument = arguments.joinToString(", ")
+        val argument = arguments.joinToString(", ") + ", " + argumentLines.joinToString(", ")
         val variables = variables.joinToString(SEPARATOR).prependIndent("\t")
         val init = init?.toString()?.prependIndent("\t") ?: ""
         val packageName = if (packageName.isNotEmpty()) "package $packageName" else ""
@@ -171,6 +177,11 @@ class FunctionsBuilder(
     @CodeDsl
     fun generateIf(condition: String, init: IfBuilder.() -> Unit) {
         lines += IfBuilder(condition).apply(init).toString()
+    }
+
+    @CodeDsl
+    fun generateWhen(condition: String, init: WhenBuilder.() -> Unit) {
+        lines += WhenBuilder(condition).apply(init).toString()
     }
 
     @CodeDsl
@@ -266,6 +277,50 @@ class ElseBuilder {
         val lines = lines.joinToString(SEPARATOR).prependIndent("\t")
         return StringBuilder()
             .append(" else {")
+            .append(SEPARATOR)
+            .append(lines)
+            .append(SEPARATOR)
+            .append("}")
+            .append(SEPARATOR)
+            .toString()
+    }
+}
+
+@CodeDsl
+class WhenBuilder(private val condition: String) {
+    private val lines: MutableList<String> = mutableListOf()
+
+    @CodeDsl
+    fun condition(condition: String, init: WhenConditionBuilder.() -> Unit) {
+        lines += WhenConditionBuilder(condition).apply(init).toString()
+    }
+
+    override fun toString(): String {
+        val lines = lines.joinToString(SEPARATOR).prependIndent("\t")
+        return StringBuilder()
+            .append("when ($condition) {")
+            .append(SEPARATOR)
+            .append(lines)
+            .append(SEPARATOR)
+            .append("}")
+            .append(SEPARATOR)
+            .toString()
+    }
+}
+
+@CodeDsl
+class WhenConditionBuilder(private val condition: String) {
+    private val lines: MutableList<String> = mutableListOf()
+
+    @CodeDsl
+    operator fun String.unaryPlus() {
+        lines += this
+    }
+
+    override fun toString(): String {
+        val lines = lines.joinToString(SEPARATOR).prependIndent("\t")
+        return StringBuilder()
+            .append("$condition -> {")
             .append(SEPARATOR)
             .append(lines)
             .append(SEPARATOR)

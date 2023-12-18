@@ -5,9 +5,9 @@ import generator.Generator
 import generator.VisitorData
 import java.io.File
 
-class NodeGenerator : Generator {
+class NodeClassGenerator : Generator {
     override fun generate(data: VisitorData, stringPath: String) {
-        File("$stringPath/Node.kt").writeText(
+        File(stringPath, "Node.kt").writeText(
             generateClass("Node", isDataClass = true) {
                 packageName(data.packageName)
                 argument(
@@ -21,6 +21,9 @@ class NodeGenerator : Generator {
                     defaultValue = "emptyList()",
                     isVal = true
                 )
+                data.nodeValues.forEach {
+                    argument(it)
+                }
             }
         )
     }
