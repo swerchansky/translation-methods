@@ -1,6 +1,7 @@
 package generator.files
 
 import dsl.generateClass
+import generator.Constants.ATTR_SYMBOL
 import generator.Constants.EOF
 import generator.Constants.EPS
 import generator.Constants.START
@@ -9,22 +10,25 @@ import generator.VisitorData
 import java.io.File
 
 class ParserClassGenerator : Generator {
-    override fun generate(data: VisitorData, stringPath: String) {
-        File(stringPath, "Parser.kt").writeText(
-            generateClass("Parser") {
+    override fun generate(data: VisitorData, stringPath: String, prefix: String) {
+        File(stringPath, "${prefix}Parser.kt").writeText(
+            generateClass("${prefix}Parser") {
                 packageName(data.packageName)
-                argument("lexer", "LexerAnalyzer", isVal = true, isPrivate = true)
+                +"private var id = 0"
+                +"  get() = field++"
+                data.attributes.forEach { +it.removePrefix(ATTR_SYMBOL).removeSuffix(ATTR_SYMBOL) }
+                argument("lexer", "${prefix}LexerAnalyzer", isVal = true, isPrivate = true)
 
                 variable("text", "String", "\"\"", isVar = true, isPrivate = true)
 
-                function("parse", "Node") {
+                function("parse", "${prefix}Node") {
                     +"return $START()"
                 }
 
                 data.rules.keys.forEach { ruleName ->
-                    function(ruleName, "Node", isPrivate = true) {
-                        +"val children = mutableListOf<Node>()"
-                        +"val result = Node(\"$ruleName\", children)"
+                    function(ruleName, "${prefix}Node", isPrivate = true) {
+                        +"val children = mutableListOf<${prefix}Node>()"
+                        +"val result = ${prefix}Node(id, \"$ruleName\", children)"
                         generateWhen("lexer.token") {
                             data.first[ruleName]?.forEach firstFor@ { first ->
                                 var varIndex = 0
@@ -32,22 +36,31 @@ class ParserClassGenerator : Generator {
                                 if (first == EPS) {
                                     data.follow[ruleName]?.forEach { follow ->
                                         val nodeName = if (follow == EOF) EOF else EPS
-                                        condition("Token.$follow") {
-                                            +"children += Node(\"$nodeName\")"
+                                        condition("${prefix}Token.$follow") {
+                                            for (rulePart in data.rules[ruleName]!![ruleNumber]) {
+                                                if (rulePart.startsWith(ATTR_SYMBOL)) {
+                                                    +rulePart.removePrefix(ATTR_SYMBOL).removeSuffix(ATTR_SYMBOL)
+                                                }
+                                            }
+                                            +"children += ${prefix}Node(id, \"$nodeName\")"
                                             +"return result"
                                         }
                                     }
                                     return@firstFor
                                 }
-                                condition("Token.$first") {
-                                    data.rules[ruleName]?.get(ruleNumber)?.forEach { rulePart ->
+                                condition("${prefix}Token.$first") {
+                                    data.rules[ruleName]?.get(ruleNumber)?.forEach conditions@ { rulePart ->
+                                        if (rulePart.startsWith(ATTR_SYMBOL)) {
+                                            +rulePart.removePrefix(ATTR_SYMBOL).removeSuffix(ATTR_SYMBOL)
+                                            return@conditions
+                                        }
                                         if (rulePart in data.tokens.keys) {
-                                            +"check(Token.$rulePart, \"$rulePart\")"
+                                            +"check(${prefix}Token.$rulePart, \"$rulePart\")"
                                             +"text = lexer.tokenValue"
                                             if (rulePart == EOF) {
-                                                +"children += Node(\"$EOF\")"
+                                                +"children += ${prefix}Node(id, \"$EOF\")"
                                             } else {
-                                                +"children += Node(text)"
+                                                +"children += ${prefix}Node(id, text)"
                                             }
                                             +"lexer.nextToken()"
                                         } else {
@@ -60,17 +73,17 @@ class ParserClassGenerator : Generator {
                                 }
                             }
                                 condition("else") {
-                                    +"throw Exception()"
+                                    +"throw IllegalStateException(\"Unexpected token: \${lexer.token}\")"
                                 }
                         }
                     }
                 }
 
                 function("check", isPrivate = true) {
-                    argument("token", "Token")
+                    argument("token", "${prefix}Token")
                     argument("rule", "String")
                     generateIf("lexer.token != token") {
-                        +"throw Exception()"
+                        +"throw IllegalStateException(\"Expected \$rule, but found \${lexer.token}\")"
                     }
                 }
             }

@@ -13,6 +13,7 @@ repositories {
 
 dependencies {
     antlr("org.antlr:antlr4:4.11.1")
+    implementation("io.github.rchowell:dotlin:1.0.2")
     testImplementation(kotlin("test"))
 }
 

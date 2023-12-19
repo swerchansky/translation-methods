@@ -2,19 +2,32 @@ package generator
 
 import antlrgenerated.ParserGeneratorBaseVisitor
 import antlrgenerated.ParserGeneratorParser
+import generator.Constants.ATTR_SYMBOL
 import generator.Constants.EOF
 import generator.Constants.EPS
 import generator.Constants.START
 import org.antlr.v4.runtime.tree.ParseTree
 
 class ParserGeneratorVisitorImpl : ParserGeneratorBaseVisitor<Unit>() {
-    val data by lazy { VisitorData(rules, tokens, first, follow, packageName, ruleNumberFromFirst, nodeValues) }
+    val data by lazy {
+        VisitorData(
+            rules,
+            tokens,
+            first,
+            follow,
+            packageName,
+            ruleNumberFromFirst,
+            nodeValues,
+            attributes
+        )
+    }
     private val rules = hashMapOf<String, MutableList<MutableList<String>>>()
-    private val tokens = hashMapOf<String, String>()
+    private val tokens = linkedMapOf<String, String>()
     private val first = hashMapOf<String, HashSet<String>>()
     private val follow = hashMapOf<String, HashSet<String>>()
     private val ruleNumberFromFirst = hashMapOf<String, HashMap<String, Int>>()
     private val nodeValues = mutableListOf<String>()
+    private val attributes = mutableListOf<String>()
     private var packageName = ""
 
     override fun visit(tree: ParseTree?) {
@@ -23,12 +36,18 @@ class ParserGeneratorVisitorImpl : ParserGeneratorBaseVisitor<Unit>() {
 
     override fun visitPackage(ctx: ParserGeneratorParser.PackageContext?) {
         ctx ?: return
-        packageName = ctx.RULE_NAME().text
+        packageName = ctx.PACKAGE_NAME().text
+    }
+
+    override fun visitParserAttr(ctx: ParserGeneratorParser.ParserAttrContext?) {
+        super.visitParserAttr(ctx)
+        ctx ?: return
+        attributes.add(ctx.ATTR().text)
     }
 
     override fun visitNodeValue(ctx: ParserGeneratorParser.NodeValueContext?) {
         ctx ?: return
-        nodeValues.add(ctx.NODE_ATTR().text)
+        nodeValues.add(ctx.ATTR().text)
     }
 
     override fun visitStart(ctx: ParserGeneratorParser.StartContext?) {
@@ -101,14 +120,20 @@ class ParserGeneratorVisitorImpl : ParserGeneratorBaseVisitor<Unit>() {
                 rules.getOrDefault(key, emptyList()).forEach { rule ->
                     for (i in rule.indices) {
                         val currentRule = rule.getOrNull(i) ?: continue
-                        if (currentRule !in rules) continue
+                        if (currentRule !in rules || currentRule.startsWith(ATTR_SYMBOL)) continue
                         if (i < rule.size - 1) {
-                            val nextRule = rule.getOrNull(i + 1) ?: continue
-                            val nextFirst = getFirst(nextRule)
+                            var position = i + 1
+                            while (position < rule.size && rule[position].startsWith(ATTR_SYMBOL)) position++
+                            if (position >= rule.size) {
+                                changed = follow.getOrDefault(currentRule, mutableListOf())
+                                    .addAll(getFollow(key)) or changed
+                                continue
+                            }
+                            val nextFirst = getFirst(rule[position])
                             if (nextFirst.contains(EPS)) {
                                 nextFirst.remove(EPS)
                                 changed = follow.getOrDefault(currentRule, mutableListOf())
-                                    .addAll(getFollow(nextRule)) or changed
+                                    .addAll(getFollow(rule[position])) or changed
                             }
                             changed = follow.getOrDefault(currentRule, mutableListOf()).addAll(nextFirst) or changed
                         } else {

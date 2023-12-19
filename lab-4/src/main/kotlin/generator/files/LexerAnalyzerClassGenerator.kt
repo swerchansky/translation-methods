@@ -7,16 +7,16 @@ import generator.VisitorData
 import java.io.File
 
 class LexerAnalyzerClassGenerator : Generator {
-    override fun generate(data: VisitorData, stringPath: String) {
-        File(stringPath, "LexerAnalyzer.kt").writeText(
-            generateClass("LexerAnalyzer") {
+    override fun generate(data: VisitorData, stringPath: String, prefix: String) {
+        File(stringPath, "${prefix}LexerAnalyzer.kt").writeText(
+            generateClass("${prefix}LexerAnalyzer") {
                 packageName(data.packageName)
                 import("java.io.InputStream")
                 argument("stream", "InputStream", isVal = true, isPrivate = true)
 
                 variable("position", "Int", "0", isVar = true)
                 variable("currentChar", "Int", "-1", isVar = true)
-                variable("token", "Token", "Token.$EOF", isVar = true)
+                variable("token", "${prefix}Token", "${prefix}Token.$EOF", isVar = true)
                 variable("tokenValue", "String", "\"\"", isVar = true)
                 variable("tokenText", "StringBuilder", "StringBuilder()", isVar = true)
 
@@ -34,7 +34,7 @@ class LexerAnalyzerClassGenerator : Generator {
                         generateIf("currentChar < 0") {
                             +"string = tokenText.toString()"
                             +"tokenText.clear()"
-                            +"token = Token.EOF"
+                            +"token = ${prefix}Token.EOF"
                             +"tokenValue = \"EOF\""
                             +"break"
                         }
@@ -64,7 +64,7 @@ class LexerAnalyzerClassGenerator : Generator {
                     data.tokens.keys.forEach { token ->
                         val tokenValue = data.tokens.getOrDefault(token, "")
                         generateIf(getConditionForToken(tokenValue, "string")) {
-                            +"token = Token.$token"
+                            +"token = ${prefix}Token.$token"
                             +"tokenValue = string"
                             +"return"
                         }

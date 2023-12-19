@@ -50,6 +50,7 @@ class ClassBuilder(private val name: String, private val isDataClass: Boolean = 
     private val variables: MutableList<Argument> = mutableListOf()
     private val functions: MutableList<FunctionsBuilder> = mutableListOf()
     private val imports: MutableList<Import> = mutableListOf()
+    private val lines = mutableListOf<String>()
     private var packageName: String = ""
     private var init: InitBuilder? = null
 
@@ -107,10 +108,16 @@ class ClassBuilder(private val name: String, private val isDataClass: Boolean = 
         functions += FunctionsBuilder(name, returnType, isPrivate).apply(init)
     }
 
+    @CodeDsl
+    operator fun String.unaryPlus() {
+        lines += this
+    }
+
     override fun toString(): String {
         val functions = functions.joinToString("$SEPARATOR$SEPARATOR").prependIndent("\t")
         val imports = imports.joinToString(SEPARATOR)
         val data = if (isDataClass) "data " else ""
+        val lines = lines.joinToString(SEPARATOR).prependIndent("\t")
         val argument = arguments.joinToString(", ") + ", " + argumentLines.joinToString(", ")
         val variables = variables.joinToString(SEPARATOR).prependIndent("\t")
         val init = init?.toString()?.prependIndent("\t") ?: ""
@@ -123,6 +130,8 @@ class ClassBuilder(private val name: String, private val isDataClass: Boolean = 
             .append("${data}class $name($argument) {")
             .append(SEPARATOR)
             .append(variables)
+            .append(SEPARATOR)
+            .append(lines)
             .append(SEPARATOR)
             .append(init)
             .append(SEPARATOR)

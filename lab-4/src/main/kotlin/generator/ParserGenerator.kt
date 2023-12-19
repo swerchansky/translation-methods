@@ -14,8 +14,9 @@ class ParserGenerator : Generator {
         ParserClassGenerator(),
     )
 
-    override fun generate(data: VisitorData, stringPath: String) {
+    override fun generate(data: VisitorData, stringPath: String, prefix: String) {
+        val prefixFormatted = prefix.first().uppercase() + prefix.drop(1)
         File(stringPath).also { it.mkdirs() }
-        generators.forEach { it.generate(data, stringPath) }
+        generators.forEach { it.generate(data, stringPath, prefixFormatted) }
     }
 }

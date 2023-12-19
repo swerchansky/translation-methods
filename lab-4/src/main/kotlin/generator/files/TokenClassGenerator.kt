@@ -6,9 +6,9 @@ import generator.VisitorData
 import java.io.File
 
 class TokenClassGenerator : Generator {
-    override fun generate(data: VisitorData, stringPath: String) {
-        File(stringPath, "Token.kt").writeText(
-            generateEnumClass("Token") {
+    override fun generate(data: VisitorData, stringPath: String, prefix: String) {
+        File(stringPath, "${prefix}Token.kt").writeText(
+            generateEnumClass("${prefix}Token") {
                 packageName(data.packageName)
                 data.tokens.keys.forEach {
                     value(it)

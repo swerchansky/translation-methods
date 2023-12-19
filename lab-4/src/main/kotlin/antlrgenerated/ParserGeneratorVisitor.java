@@ -19,6 +19,12 @@ public interface ParserGeneratorVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStart(ParserGeneratorParser.StartContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ParserGeneratorParser#parserAttr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParserAttr(ParserGeneratorParser.ParserAttrContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link ParserGeneratorParser#nodeValue}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

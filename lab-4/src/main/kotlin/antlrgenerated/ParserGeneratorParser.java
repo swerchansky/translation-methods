@@ -19,28 +19,28 @@ public class ParserGeneratorParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, T__3=4, NODE_ATTR=5, RULE_NAME=6, TOKEN_NAME=7, 
-		REGEX_VALUE=8, TOKEN_VALUE=9, WS=10;
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, ATTR=6, RULE_NAME=7, TOKEN_NAME=8, 
+		PACKAGE_NAME=9, REGEX_VALUE=10, TOKEN_VALUE=11, WS=12;
 	public static final int
-		RULE_start = 0, RULE_nodeValue = 1, RULE_package = 2, RULE_rule = 3, RULE_rule_body = 4, 
-		RULE_token = 5;
+		RULE_start = 0, RULE_parserAttr = 1, RULE_nodeValue = 2, RULE_package = 3, 
+		RULE_rule = 4, RULE_rule_body = 5, RULE_token = 6;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"start", "nodeValue", "package", "rule", "rule_body", "token"
+			"start", "parserAttr", "nodeValue", "package", "rule", "rule_body", "token"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'node'", "'+'", "';'", "':'"
+			null, "'attr'", "'node'", "'+'", "';'", "':'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, null, null, null, "NODE_ATTR", "RULE_NAME", "TOKEN_NAME", 
-			"REGEX_VALUE", "TOKEN_VALUE", "WS"
+			null, null, null, null, null, null, "ATTR", "RULE_NAME", "TOKEN_NAME", 
+			"PACKAGE_NAME", "REGEX_VALUE", "TOKEN_VALUE", "WS"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -100,6 +100,12 @@ public class ParserGeneratorParser extends Parser {
 		public PackageContext package_() {
 			return getRuleContext(PackageContext.class,0);
 		}
+		public List<ParserAttrContext> parserAttr() {
+			return getRuleContexts(ParserAttrContext.class);
+		}
+		public ParserAttrContext parserAttr(int i) {
+			return getRuleContext(ParserAttrContext.class,i);
+		}
 		public List<NodeValueContext> nodeValue() {
 			return getRuleContexts(NodeValueContext.class);
 		}
@@ -144,59 +150,73 @@ public class ParserGeneratorParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(13);
+			setState(15);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (_la==T__1) {
+			if (_la==T__2) {
 				{
-				setState(12);
+				setState(14);
 				package_();
 				}
 			}
 
-			setState(18);
+			setState(20);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__0) {
 				{
 				{
-				setState(15);
-				nodeValue();
+				setState(17);
+				parserAttr();
 				}
 				}
-				setState(20);
+				setState(22);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(22); 
+			setState(26);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==T__1) {
+				{
+				{
+				setState(23);
+				nodeValue();
+				}
+				}
+				setState(28);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			setState(30); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(21);
+				setState(29);
 				rule_();
 				}
 				}
-				setState(24); 
+				setState(32); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( _la==RULE_NAME );
-			setState(27); 
+			setState(35); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(26);
+				setState(34);
 				token();
 				}
 				}
-				setState(29); 
+				setState(37); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( _la==TOKEN_NAME );
-			setState(31);
+			setState(39);
 			match(EOF);
 			}
 		}
@@ -212,8 +232,53 @@ public class ParserGeneratorParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
+	public static class ParserAttrContext extends ParserRuleContext {
+		public TerminalNode ATTR() { return getToken(ParserGeneratorParser.ATTR, 0); }
+		public ParserAttrContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_parserAttr; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ParserGeneratorListener ) ((ParserGeneratorListener)listener).enterParserAttr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ParserGeneratorListener ) ((ParserGeneratorListener)listener).exitParserAttr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ParserGeneratorVisitor ) return ((ParserGeneratorVisitor<? extends T>)visitor).visitParserAttr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ParserAttrContext parserAttr() throws RecognitionException {
+		ParserAttrContext _localctx = new ParserAttrContext(_ctx, getState());
+		enterRule(_localctx, 2, RULE_parserAttr);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(41);
+			match(T__0);
+			setState(42);
+			match(ATTR);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	@SuppressWarnings("CheckReturnValue")
 	public static class NodeValueContext extends ParserRuleContext {
-		public TerminalNode NODE_ATTR() { return getToken(ParserGeneratorParser.NODE_ATTR, 0); }
+		public TerminalNode ATTR() { return getToken(ParserGeneratorParser.ATTR, 0); }
 		public NodeValueContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -235,14 +300,14 @@ public class ParserGeneratorParser extends Parser {
 
 	public final NodeValueContext nodeValue() throws RecognitionException {
 		NodeValueContext _localctx = new NodeValueContext(_ctx, getState());
-		enterRule(_localctx, 2, RULE_nodeValue);
+		enterRule(_localctx, 4, RULE_nodeValue);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(33);
-			match(T__0);
-			setState(34);
-			match(NODE_ATTR);
+			setState(44);
+			match(T__1);
+			setState(45);
+			match(ATTR);
 			}
 		}
 		catch (RecognitionException re) {
@@ -258,7 +323,7 @@ public class ParserGeneratorParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class PackageContext extends ParserRuleContext {
-		public TerminalNode RULE_NAME() { return getToken(ParserGeneratorParser.RULE_NAME, 0); }
+		public TerminalNode PACKAGE_NAME() { return getToken(ParserGeneratorParser.PACKAGE_NAME, 0); }
 		public PackageContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -280,16 +345,16 @@ public class ParserGeneratorParser extends Parser {
 
 	public final PackageContext package_() throws RecognitionException {
 		PackageContext _localctx = new PackageContext(_ctx, getState());
-		enterRule(_localctx, 4, RULE_package);
+		enterRule(_localctx, 6, RULE_package);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(36);
-			match(T__1);
-			setState(37);
-			match(RULE_NAME);
-			setState(38);
+			setState(47);
 			match(T__2);
+			setState(48);
+			match(PACKAGE_NAME);
+			setState(49);
+			match(T__3);
 			}
 		}
 		catch (RecognitionException re) {
@@ -330,18 +395,18 @@ public class ParserGeneratorParser extends Parser {
 
 	public final RuleContext rule_() throws RecognitionException {
 		RuleContext _localctx = new RuleContext(_ctx, getState());
-		enterRule(_localctx, 6, RULE_rule);
+		enterRule(_localctx, 8, RULE_rule);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(40);
+			setState(51);
 			match(RULE_NAME);
-			setState(41);
-			match(T__3);
-			setState(42);
+			setState(52);
+			match(T__4);
+			setState(53);
 			rule_body();
-			setState(43);
-			match(T__2);
+			setState(54);
+			match(T__3);
 			}
 		}
 		catch (RecognitionException re) {
@@ -365,6 +430,10 @@ public class ParserGeneratorParser extends Parser {
 		public TerminalNode TOKEN_NAME(int i) {
 			return getToken(ParserGeneratorParser.TOKEN_NAME, i);
 		}
+		public List<TerminalNode> ATTR() { return getTokens(ParserGeneratorParser.ATTR); }
+		public TerminalNode ATTR(int i) {
+			return getToken(ParserGeneratorParser.ATTR, i);
+		}
 		public Rule_bodyContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -386,20 +455,20 @@ public class ParserGeneratorParser extends Parser {
 
 	public final Rule_bodyContext rule_body() throws RecognitionException {
 		Rule_bodyContext _localctx = new Rule_bodyContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_rule_body);
+		enterRule(_localctx, 10, RULE_rule_body);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(46); 
+			setState(57); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(45);
+				setState(56);
 				_la = _input.LA(1);
-				if ( !(_la==RULE_NAME || _la==TOKEN_NAME) ) {
+				if ( !(((_la) & ~0x3f) == 0 && ((1L << _la) & 448L) != 0) ) {
 				_errHandler.recoverInline(this);
 				}
 				else {
@@ -409,10 +478,10 @@ public class ParserGeneratorParser extends Parser {
 				}
 				}
 				}
-				setState(48); 
+				setState(59); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( _la==RULE_NAME || _la==TOKEN_NAME );
+			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 448L) != 0 );
 			}
 		}
 		catch (RecognitionException re) {
@@ -452,16 +521,16 @@ public class ParserGeneratorParser extends Parser {
 
 	public final TokenContext token() throws RecognitionException {
 		TokenContext _localctx = new TokenContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_token);
+		enterRule(_localctx, 12, RULE_token);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(50);
+			setState(61);
 			match(TOKEN_NAME);
-			setState(51);
-			match(T__3);
-			setState(52);
+			setState(62);
+			match(T__4);
+			setState(63);
 			_la = _input.LA(1);
 			if ( !(_la==REGEX_VALUE || _la==TOKEN_VALUE) ) {
 			_errHandler.recoverInline(this);
@@ -471,8 +540,8 @@ public class ParserGeneratorParser extends Parser {
 				_errHandler.reportMatch(this);
 				consume();
 			}
-			setState(53);
-			match(T__2);
+			setState(64);
+			match(T__3);
 			}
 		}
 		catch (RecognitionException re) {
@@ -487,41 +556,47 @@ public class ParserGeneratorParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\n8\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001\fC\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
-		"\u0005\u0007\u0005\u0001\u0000\u0003\u0000\u000e\b\u0000\u0001\u0000\u0005"+
-		"\u0000\u0011\b\u0000\n\u0000\f\u0000\u0014\t\u0000\u0001\u0000\u0004\u0000"+
-		"\u0017\b\u0000\u000b\u0000\f\u0000\u0018\u0001\u0000\u0004\u0000\u001c"+
-		"\b\u0000\u000b\u0000\f\u0000\u001d\u0001\u0000\u0001\u0000\u0001\u0001"+
-		"\u0001\u0001\u0001\u0001\u0001\u0002\u0001\u0002\u0001\u0002\u0001\u0002"+
-		"\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0004"+
-		"\u0004\u0004/\b\u0004\u000b\u0004\f\u00040\u0001\u0005\u0001\u0005\u0001"+
-		"\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0000\u0000\u0006\u0000\u0002"+
-		"\u0004\u0006\b\n\u0000\u0002\u0001\u0000\u0006\u0007\u0001\u0000\b\t6"+
-		"\u0000\r\u0001\u0000\u0000\u0000\u0002!\u0001\u0000\u0000\u0000\u0004"+
-		"$\u0001\u0000\u0000\u0000\u0006(\u0001\u0000\u0000\u0000\b.\u0001\u0000"+
-		"\u0000\u0000\n2\u0001\u0000\u0000\u0000\f\u000e\u0003\u0004\u0002\u0000"+
-		"\r\f\u0001\u0000\u0000\u0000\r\u000e\u0001\u0000\u0000\u0000\u000e\u0012"+
-		"\u0001\u0000\u0000\u0000\u000f\u0011\u0003\u0002\u0001\u0000\u0010\u000f"+
-		"\u0001\u0000\u0000\u0000\u0011\u0014\u0001\u0000\u0000\u0000\u0012\u0010"+
-		"\u0001\u0000\u0000\u0000\u0012\u0013\u0001\u0000\u0000\u0000\u0013\u0016"+
-		"\u0001\u0000\u0000\u0000\u0014\u0012\u0001\u0000\u0000\u0000\u0015\u0017"+
-		"\u0003\u0006\u0003\u0000\u0016\u0015\u0001\u0000\u0000\u0000\u0017\u0018"+
-		"\u0001\u0000\u0000\u0000\u0018\u0016\u0001\u0000\u0000\u0000\u0018\u0019"+
-		"\u0001\u0000\u0000\u0000\u0019\u001b\u0001\u0000\u0000\u0000\u001a\u001c"+
-		"\u0003\n\u0005\u0000\u001b\u001a\u0001\u0000\u0000\u0000\u001c\u001d\u0001"+
-		"\u0000\u0000\u0000\u001d\u001b\u0001\u0000\u0000\u0000\u001d\u001e\u0001"+
-		"\u0000\u0000\u0000\u001e\u001f\u0001\u0000\u0000\u0000\u001f \u0005\u0000"+
-		"\u0000\u0001 \u0001\u0001\u0000\u0000\u0000!\"\u0005\u0001\u0000\u0000"+
-		"\"#\u0005\u0005\u0000\u0000#\u0003\u0001\u0000\u0000\u0000$%\u0005\u0002"+
-		"\u0000\u0000%&\u0005\u0006\u0000\u0000&\'\u0005\u0003\u0000\u0000\'\u0005"+
-		"\u0001\u0000\u0000\u0000()\u0005\u0006\u0000\u0000)*\u0005\u0004\u0000"+
-		"\u0000*+\u0003\b\u0004\u0000+,\u0005\u0003\u0000\u0000,\u0007\u0001\u0000"+
-		"\u0000\u0000-/\u0007\u0000\u0000\u0000.-\u0001\u0000\u0000\u0000/0\u0001"+
-		"\u0000\u0000\u00000.\u0001\u0000\u0000\u000001\u0001\u0000\u0000\u0000"+
-		"1\t\u0001\u0000\u0000\u000023\u0005\u0007\u0000\u000034\u0005\u0004\u0000"+
-		"\u000045\u0007\u0001\u0000\u000056\u0005\u0003\u0000\u00006\u000b\u0001"+
-		"\u0000\u0000\u0000\u0005\r\u0012\u0018\u001d0";
+		"\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0001\u0000\u0003\u0000\u0010"+
+		"\b\u0000\u0001\u0000\u0005\u0000\u0013\b\u0000\n\u0000\f\u0000\u0016\t"+
+		"\u0000\u0001\u0000\u0005\u0000\u0019\b\u0000\n\u0000\f\u0000\u001c\t\u0000"+
+		"\u0001\u0000\u0004\u0000\u001f\b\u0000\u000b\u0000\f\u0000 \u0001\u0000"+
+		"\u0004\u0000$\b\u0000\u000b\u0000\f\u0000%\u0001\u0000\u0001\u0000\u0001"+
+		"\u0001\u0001\u0001\u0001\u0001\u0001\u0002\u0001\u0002\u0001\u0002\u0001"+
+		"\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0004\u0001\u0004\u0001"+
+		"\u0004\u0001\u0004\u0001\u0004\u0001\u0005\u0004\u0005:\b\u0005\u000b"+
+		"\u0005\f\u0005;\u0001\u0006\u0001\u0006\u0001\u0006\u0001\u0006\u0001"+
+		"\u0006\u0001\u0006\u0000\u0000\u0007\u0000\u0002\u0004\u0006\b\n\f\u0000"+
+		"\u0002\u0001\u0000\u0006\b\u0001\u0000\n\u000bA\u0000\u000f\u0001\u0000"+
+		"\u0000\u0000\u0002)\u0001\u0000\u0000\u0000\u0004,\u0001\u0000\u0000\u0000"+
+		"\u0006/\u0001\u0000\u0000\u0000\b3\u0001\u0000\u0000\u0000\n9\u0001\u0000"+
+		"\u0000\u0000\f=\u0001\u0000\u0000\u0000\u000e\u0010\u0003\u0006\u0003"+
+		"\u0000\u000f\u000e\u0001\u0000\u0000\u0000\u000f\u0010\u0001\u0000\u0000"+
+		"\u0000\u0010\u0014\u0001\u0000\u0000\u0000\u0011\u0013\u0003\u0002\u0001"+
+		"\u0000\u0012\u0011\u0001\u0000\u0000\u0000\u0013\u0016\u0001\u0000\u0000"+
+		"\u0000\u0014\u0012\u0001\u0000\u0000\u0000\u0014\u0015\u0001\u0000\u0000"+
+		"\u0000\u0015\u001a\u0001\u0000\u0000\u0000\u0016\u0014\u0001\u0000\u0000"+
+		"\u0000\u0017\u0019\u0003\u0004\u0002\u0000\u0018\u0017\u0001\u0000\u0000"+
+		"\u0000\u0019\u001c\u0001\u0000\u0000\u0000\u001a\u0018\u0001\u0000\u0000"+
+		"\u0000\u001a\u001b\u0001\u0000\u0000\u0000\u001b\u001e\u0001\u0000\u0000"+
+		"\u0000\u001c\u001a\u0001\u0000\u0000\u0000\u001d\u001f\u0003\b\u0004\u0000"+
+		"\u001e\u001d\u0001\u0000\u0000\u0000\u001f \u0001\u0000\u0000\u0000 \u001e"+
+		"\u0001\u0000\u0000\u0000 !\u0001\u0000\u0000\u0000!#\u0001\u0000\u0000"+
+		"\u0000\"$\u0003\f\u0006\u0000#\"\u0001\u0000\u0000\u0000$%\u0001\u0000"+
+		"\u0000\u0000%#\u0001\u0000\u0000\u0000%&\u0001\u0000\u0000\u0000&\'\u0001"+
+		"\u0000\u0000\u0000\'(\u0005\u0000\u0000\u0001(\u0001\u0001\u0000\u0000"+
+		"\u0000)*\u0005\u0001\u0000\u0000*+\u0005\u0006\u0000\u0000+\u0003\u0001"+
+		"\u0000\u0000\u0000,-\u0005\u0002\u0000\u0000-.\u0005\u0006\u0000\u0000"+
+		".\u0005\u0001\u0000\u0000\u0000/0\u0005\u0003\u0000\u000001\u0005\t\u0000"+
+		"\u000012\u0005\u0004\u0000\u00002\u0007\u0001\u0000\u0000\u000034\u0005"+
+		"\u0007\u0000\u000045\u0005\u0005\u0000\u000056\u0003\n\u0005\u000067\u0005"+
+		"\u0004\u0000\u00007\t\u0001\u0000\u0000\u00008:\u0007\u0000\u0000\u0000"+
+		"98\u0001\u0000\u0000\u0000:;\u0001\u0000\u0000\u0000;9\u0001\u0000\u0000"+
+		"\u0000;<\u0001\u0000\u0000\u0000<\u000b\u0001\u0000\u0000\u0000=>\u0005"+
+		"\b\u0000\u0000>?\u0005\u0005\u0000\u0000?@\u0007\u0001\u0000\u0000@A\u0005"+
+		"\u0004\u0000\u0000A\r\u0001\u0000\u0000\u0000\u0006\u000f\u0014\u001a"+
+		" %;";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
