@@ -1,0 +1,73 @@
+Attr %
+data class Complex(var real: Int, var im: Int) {
+				constructor(other: Complex) : this(other.real, other.im)
+
+				constructor(s: String) : this(0, 0) {
+					if (s.contains("j")) {
+						im = Integer.parseInt(s.substring(0, s.lastIndex))
+					} else {
+						real = Integer.parseInt(s)
+					}
+				}
+
+				override fun toString(): String {
+					if (im == 0) {
+						return real.toString()
+					}
+					val sign = if (im < 0) "-" else "+"
+					return "$real $sign ${if (im < 0) -im else im}j"
+				}
+
+				operator fun plus(other: Complex) = Complex(real + other.real, im + other.im)
+				operator fun minus(other: Complex) = Complex(real - other.real, im - other.im)
+				operator fun times(other: Complex) = Complex(real * other.real - im * other.im,
+					real * other.im + im * other.real)
+				operator fun unaryMinus() = Complex(-real, -im)
+}
+val stack = ArrayDeque<Complex>();
+%
+
+Node @
+var complex = Parser.Complex(0, 0);
+@
+
+start -> fullGrammar $res.complex = Complex(var0.complex);$ EOF;
+
+fullGrammar -> expression $res.complex = Complex(var0.complex);$ ;
+
+expression -> term expressionPrime $res.complex = Complex(var1.complex);$ ;
+
+expressionPrime -> MINUS term $val second = stack.pollLast(); val first = stack.pollLast(); stack.addLast(first - second);$
+    expressionPrime $res.complex = Complex(var1.complex);$ ;
+expressionPrime -> PLUS term $val second = stack.pollLast(); val first = stack.pollLast(); stack.addLast(first + second);$
+    expressionPrime $res.complex = Complex(var1.complex);$ ;
+expressionPrime -> EPS $res.complex = Complex(stack.peekLast());$ ;
+
+term -> factor termPrime $res.complex = Complex(var1.complex);$ ;
+
+termPrime -> MUL factor $val second = stack.pollLast(); val first = stack.pollLast(); stack.addLast(first * second);$
+    termPrime $res.complex = Complex(var1.complex);$ ;
+termPrime -> EPS $res.complex = Complex(stack.peekLast());$ ;
+
+factor -> number $res.complex = Complex(text); stack.addLast(Complex(text));$ ;
+factor -> exprInBrackets;
+factor -> MINUS exprInBrackets $res.complex = -var0.complex; stack.pollLast(); stack.addLast(res.complex);$ ;
+
+exprInBrackets -> LPAREN expression RPAREN $res.complex = Complex(var0.complex);$ ;
+
+number -> REAL;
+number -> IMAGINARY;
+
+PLUS -> '\\+';
+MINUS -> '\\-';
+
+MUL -> '\\*';
+
+REAL -> '[0-9]+';
+IMAGINARY -> '[0-9]+j';
+
+LPAREN -> '\\(';
+RPAREN -> '\\)';
+
+EPS -> 'EPS';
+EOF -> '\\$';
